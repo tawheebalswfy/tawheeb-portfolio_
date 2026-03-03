@@ -1,7 +1,8 @@
 import { Star } from 'lucide-react';
-import { supabase, type Testimonial } from '@/lib/supabase';
+import { getSupabaseClient, type Testimonial } from '@/lib/supabase';
 
 async function getFeaturedTestimonials() {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('testimonials')
     .select('*')

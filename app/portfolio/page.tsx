@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { supabase, type Project } from '@/lib/supabase';
+import { getSupabaseClient, type Project } from '@/lib/supabase';
 import { CATEGORY_LABELS, CATEGORY_COLORS, SITE_CONFIG } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 async function getProjects(category?: string) {
+  const supabase = getSupabaseClient();
   let query = supabase
     .from('projects')
     .select('*')

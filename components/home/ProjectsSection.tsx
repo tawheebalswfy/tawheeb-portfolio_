@@ -3,10 +3,11 @@ import Image from 'next/image';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { supabase, type Project } from '@/lib/supabase';
+import { getSupabaseClient, type Project } from '@/lib/supabase';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/lib/constants';
 
 async function getFeaturedProjects() {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('projects')
     .select('*')

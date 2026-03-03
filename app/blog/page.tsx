@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from 'lucide-react';
-import { supabase, type BlogPost } from '@/lib/supabase';
+import { getSupabaseClient, type BlogPost } from '@/lib/supabase';
 import { SITE_CONFIG } from '@/lib/constants';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 };
 
 async function getBlogPosts() {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('blog_posts')
     .select('*')

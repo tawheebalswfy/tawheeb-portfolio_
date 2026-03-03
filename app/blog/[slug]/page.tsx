@@ -6,12 +6,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight } from 'lucide-react';
-import { supabase, type BlogPost } from '@/lib/supabase';
+import { getSupabaseClient, type BlogPost } from '@/lib/supabase';
 import { SITE_CONFIG } from '@/lib/constants';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 
 async function getBlogPost(slug: string) {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('blog_posts')
     .select('*')
@@ -27,12 +28,19 @@ async function getBlogPost(slug: string) {
 }
 
 export async function generateStaticParams() {
-  const { data } = await supabase
-    .from('blog_posts')
-    .select('slug')
-    .eq('published', true);
+  try {
+    const supabase = getSupabaseClient();
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('slug')
+      .eq('published', true);
 
-  return data?.map((post) => ({ slug: post.slug })) || [];
+    return data?.map((post) => ({ slug: post.slug })) || [];
+  } catch (error) {
+    // During build time, if Supabase is not configured, return empty array
+    // This allows the build to succeed; dynamic routes will work at runtime
+    return [];
+  }
 }
 
 export async function generateMetadata({

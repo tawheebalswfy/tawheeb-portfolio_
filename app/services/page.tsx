@@ -5,7 +5,7 @@ import { Brain, Code, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { SITE_CONFIG } from '@/lib/constants';
-import { supabase, type Service } from '@/lib/supabase';
+import { getSupabaseClient, type Service } from '@/lib/supabase';
 
 export const metadata: Metadata = {
   title: 'الخدمات - ' + SITE_CONFIG.name,
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 async function getServices() {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('services')
     .select('*')
