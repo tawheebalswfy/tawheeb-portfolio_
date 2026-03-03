@@ -12,6 +12,11 @@ export const metadata: Metadata = {
 
 export const revalidate = 600;
 
+type SubService = {
+  title_ar: string;
+  description_ar: string;
+};
+
 async function getServices() {
   const supabase = getSupabaseClient();
 
@@ -51,39 +56,52 @@ export default async function ServicesPage() {
                 <p className="text-lg text-muted-foreground">
                   لا توجد خدمات متاحة حالياً
                 </p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  إذا كانت البيانات موجودة في Supabase فغالباً السبب سياسات RLS.
-                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {services.map((service) => (
-                  <div
-                    key={service.id}
-                    className="bg-card rounded-xl border shadow-sm p-6 card-hover h-full flex flex-col"
-                  >
-                    <div className="mb-3 flex items-center gap-2">
-                      <span className="text-xs px-2 py-1 bg-secondary rounded-md">
-                        {service.category}
-                      </span>
+                {services.map((service) => {
+                  const subServices = (service.sub_services ?? []) as unknown as SubService[];
+
+                  return (
+                    <div
+                      key={service.id}
+                      className="bg-card rounded-xl border shadow-sm p-6 card-hover h-full flex flex-col"
+                    >
+                      <div className="mb-3 flex items-center gap-2">
+                        <span className="text-xs px-2 py-1 bg-secondary rounded-md">
+                          {service.category}
+                        </span>
+                      </div>
+
+                      <h3 className="text-xl font-bold mb-2">{service.title_ar}</h3>
+
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {service.description_ar}
+                      </p>
+
+                      {/* عرض sub_services بشكل صحيح */}
+                      {Array.isArray(subServices) && subServices.length > 0 && (
+                        <ul className="space-y-2 mb-4">
+                          {subServices.slice(0, 3).map((s, i) => (
+                            <li key={i} className="text-sm">
+                              <div className="font-semibold">{s.title_ar}</div>
+                              <div className="text-muted-foreground">{s.description_ar}</div>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
+                      <div className="mt-auto">
+                        <Link
+                          href={`/contact?subject=${encodeURIComponent(service.title_ar)}`}
+                          className="text-sm text-primary hover:underline"
+                        >
+                          طلب هذه الخدمة
+                        </Link>
+                      </div>
                     </div>
-
-                    <h3 className="text-xl font-bold mb-2">{service.title_ar}</h3>
-
-                    <p className="text-sm text-muted-foreground mb-4 flex-1">
-                      {service.description_ar}
-                    </p>
-
-                    <div className="mt-auto">
-                      <Link
-                        href={`/contact?subject=${encodeURIComponent(service.title_ar)}`}
-                        className="text-sm text-primary hover:underline"
-                      >
-                        طلب هذه الخدمة
-                      </Link>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
