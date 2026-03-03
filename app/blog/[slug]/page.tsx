@@ -28,13 +28,19 @@ async function getBlogPost(slug: string) {
 }
 
 export async function generateStaticParams() {
-  const supabase = getSupabaseClient();
-  const { data } = await supabase
-    .from('blog_posts')
-    .select('slug')
-    .eq('published', true);
+  try {
+    const supabase = getSupabaseClient();
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('slug')
+      .eq('published', true);
 
-  return data?.map((post) => ({ slug: post.slug })) || [];
+    return data?.map((post) => ({ slug: post.slug })) || [];
+  } catch (error) {
+    // During build time, if Supabase is not configured, return empty array
+    // This allows the build to succeed; dynamic routes will work at runtime
+    return [];
+  }
 }
 
 export async function generateMetadata({

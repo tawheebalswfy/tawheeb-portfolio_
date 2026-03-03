@@ -26,9 +26,15 @@ async function getProject(slug: string) {
 }
 
 export async function generateStaticParams() {
-  const supabase = getSupabaseClient();
-  const { data } = await supabase.from('projects').select('slug');
-  return data?.map((project) => ({ slug: project.slug })) || [];
+  try {
+    const supabase = getSupabaseClient();
+    const { data } = await supabase.from('projects').select('slug');
+    return data?.map((project) => ({ slug: project.slug })) || [];
+  } catch (error) {
+    // During build time, if Supabase is not configured, return empty array
+    // This allows the build to succeed; dynamic routes will work at runtime
+    return [];
+  }
 }
 
 export async function generateMetadata({
