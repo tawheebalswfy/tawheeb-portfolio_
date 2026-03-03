@@ -7,10 +7,11 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, Github, ArrowRight } from 'lucide-react';
-import { supabase, type Project } from '@/lib/supabase';
+import { getSupabaseClient, type Project } from '@/lib/supabase';
 import { CATEGORY_LABELS, CATEGORY_COLORS, SITE_CONFIG } from '@/lib/constants';
 
 async function getProject(slug: string) {
+  const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from('projects')
     .select('*')
@@ -25,6 +26,7 @@ async function getProject(slug: string) {
 }
 
 export async function generateStaticParams() {
+  const supabase = getSupabaseClient();
   const { data } = await supabase.from('projects').select('slug');
   return data?.map((project) => ({ slug: project.slug })) || [];
 }
