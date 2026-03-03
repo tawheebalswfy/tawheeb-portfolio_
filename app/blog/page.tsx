@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   description: 'مقالات ونصائح حول البرمجة، الذكاء الاصطناعي، وتطوير البرمجيات',
 };
 
+// ISR caching (رسمي من Next)
+export const revalidate = 600;
+
 async function getBlogPosts() {
   const supabase = getSupabaseClient();
   const { data, error } = await supabase
@@ -28,7 +31,7 @@ async function getBlogPosts() {
     return [];
   }
 
-  return data as BlogPost[];
+  return (data ?? []) as BlogPost[];
 }
 
 export default async function BlogPage() {
@@ -58,11 +61,7 @@ export default async function BlogPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {posts.map((post) => (
-                  <Link
-                    key={post.id}
-                    href={`/blog/${post.slug}`}
-                    className="group"
-                  >
+                  <Link key={post.id} href={`/blog/${post.slug}`} className="group">
                     <article className="bg-card rounded-xl border shadow-sm overflow-hidden card-hover h-full flex flex-col">
                       <div className="relative h-48 overflow-hidden">
                         <Image
@@ -72,28 +71,27 @@ export default async function BlogPage() {
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
+
                       <div className="p-6 flex-1 flex flex-col">
                         <div className="flex items-center gap-3 mb-3 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Calendar size={14} />
-                            {format(new Date(post.created_at), 'dd MMM yyyy', {
-                              locale: ar,
-                            })}
+                            {format(new Date(post.created_at), 'dd MMM yyyy', { locale: ar })}
                           </span>
                           <Badge variant="secondary">{post.category}</Badge>
                         </div>
+
                         <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
                           {post.title_ar}
                         </h3>
+
                         <p className="text-sm text-muted-foreground mb-4 flex-1 line-clamp-3">
                           {post.excerpt_ar}
                         </p>
+
                         <div className="flex flex-wrap gap-2">
-                          {post.tags.slice(0, 3).map((tag, i) => (
-                            <span
-                              key={i}
-                              className="text-xs px-2 py-1 bg-secondary rounded-md"
-                            >
+                          {(post.tags ?? []).slice(0, 3).map((tag, i) => (
+                            <span key={i} className="text-xs px-2 py-1 bg-secondary rounded-md">
                               #{tag}
                             </span>
                           ))}
