@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getSupabaseClient } from '@/lib/supabase';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://v0-tawheeb-portfolio.vercel.app';
 
   const supabase = getSupabaseClient();
   const { data: projects } = await supabase
