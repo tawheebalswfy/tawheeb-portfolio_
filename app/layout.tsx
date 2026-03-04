@@ -25,7 +25,6 @@ export const metadata: Metadata = {
   verification: {
     google: "nU8JpZzAvaC2hJ1KamO71csoK90_s1LOvqIge2hqB48",
   },
-
   openGraph: {
     type: 'website',
     locale: 'ar_SA',
