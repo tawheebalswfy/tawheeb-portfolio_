@@ -1,3 +1,4 @@
+
 import './globals.css';
 import type { Metadata } from 'next';
 import { Cairo } from 'next/font/google';
@@ -21,7 +22,9 @@ export const metadata: Metadata = {
   keywords: SITE_CONFIG.keywords,
   authors: [{ name: SITE_CONFIG.author }],
   creator: SITE_CONFIG.author,
-
+  verification: {
+    google: "nU8JpZzAvaC2hJ1KamO71csoK90_s1LOvqIge2hqB48",
+  },
   openGraph: {
     type: 'website',
     locale: 'ar_SA',
